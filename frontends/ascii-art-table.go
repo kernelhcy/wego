@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/kernelhcy/wego/iface"
 	"github.com/mattn/go-colorable"
 	"github.com/mattn/go-runewidth"
-	"github.com/schachmat/wego/iface"
 )
 
 type aatConfig struct {

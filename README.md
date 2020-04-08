@@ -1,6 +1,6 @@
 **wego** is a weather client for the terminal.
 
-![Screenshots](http://schachmat.github.io/wego/wego.gif)
+![Screenshots](http://kernelhcy.github.io/wego/wego.gif)
 
 ## Features
 
@@ -14,7 +14,7 @@
 * ssl, so the NSA has a harder time learning where you live or plan to go
 * multi language support
 * config file for default location which can be overridden by commandline
-* Automatic config management with [ingo](https://github.com/schachmat/ingo)
+* Automatic config management with [ingo](https://github.com/kernelhcy/ingo)
 
 ## Dependencies
 
@@ -31,7 +31,7 @@
 
 To install or update the wego binary into your `$GOPATH` as usual, run:
 ```shell
-go get -u github.com/schachmat/wego
+go get -u github.com/kernelhcy/wego
 ```
 
 ## Setup
@@ -56,7 +56,7 @@ go get -u github.com/schachmat/wego
       owm-api-key=YOUR_OPENWEATHERMAP_API_KEY_HERE
     ```
 0. __With a [Worldweatheronline](http://www.worldweatheronline.com/) account__
-    * Worldweatheronline no longer gives out free API keys. [#83](https://github.com/schachmat/wego/issues/83)
+    * Worldweatheronline no longer gives out free API keys. [#83](https://github.com/kernelhcy/wego/issues/83)
     * Update the following `.wegorc` config variables to fit your needs:
     ```
       backend=worldweatheronline
@@ -78,9 +78,9 @@ file location.
 
 ## Todo
 
-* more [backends and frontends](https://github.com/schachmat/wego/wiki/How-to-write-a-new-backend-or-frontend)
-* resolve ALL the [issues](https://github.com/schachmat/wego/issues)
-* don't forget the [TODOs in the code](https://github.com/schachmat/wego/search?q=TODO&type=Code)
+* more [backends and frontends](https://github.com/kernelhcy/wego/wiki/How-to-write-a-new-backend-or-frontend)
+* resolve ALL the [issues](https://github.com/kernelhcy/wego/issues)
+* don't forget the [TODOs in the code](https://github.com/kernelhcy/wego/search?q=TODO&type=Code)
 
 ## License - ISC
 
