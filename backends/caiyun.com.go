@@ -20,12 +20,59 @@ type cyConfig struct {
 	longitude float64
 }
 
-type cyRealtime struct {
+type cyLifeIndex struct {
+	Index 	float32	`json:"index"`
+	Desc 	string	`json:"desc"`
+}
 
+type cyLifeIndices struct {
+	Ultraviolet cyLifeIndex	`json:"ultraviolet"`
+	Comfort 	cyLifeIndex	`json:"comfort"`
+}
+
+type cyAqi struct {
+	Chn int32	`json:"chn"`
+	Usa int32	`json:"usa"`
+}
+
+type cyAirDescription struct {
+	Chn string	`json:"chn"`
+	Usa string	`json:"usa"`
+}
+
+type cyRealtimeAirQuality struct {
+	Pm25 int32            `json:"pm25"`
+	Pm10 int32            `json:"pm10"`
+	O3   int32            `json:"o3"`
+	SO2  int32            `json:"so2"`
+	NO2  int32            `json:"no2"`
+	CO   float32          `json:"co"`
+	Aqi  cyAqi            `json:"aqi"`
+	Desc cyAirDescription `json:"description"`
+}
+
+type cyRealtimeWind struct {
+	Speed 		float32	`json:"speed"`
+	Direction 	float32	`json:"direction"`
+}
+
+type cyRealtime struct {
+	Status 				string					`json:"status"`
+	Temperature 		float32					`json:"temperature"`
+	Humidity 			float32					`json:"humidity"`
+	CloudRate 			float32					`json:"cloudrate"`
+	Skycon 				string					`json:"skycon"`
+	Visibility 			float32					`json:"visibility"`
+	Dswrf 				float32					`json:"dswrf"`
+	Wind 				cyRealtimeWind			`json:"wind"`
+	Pressure 			float32					`json:"pressure"`
+	ApparentTemperature float32					`json:"apparent_temperature"`
+	Aqi 				cyRealtimeAirQuality	`json:"aqi_quality"`
+	LifeIndex 			cyLifeIndices			`json:"life_index"`
 }
 
 type cyWeatherResult struct {
-
+	Realtime cyRealtime	`json:"realtime"`
 }
 
 type cyWeatherData struct {
@@ -78,7 +125,7 @@ func (c *cyConfig) Fetch(location string, numdays int) iface.Data {
 		return iface.Data{}
 	}
 
-	fmt.Printf("%s %d\n", data.ApiVersion, data.ServerTime)
+	fmt.Printf("%s %d %s\n", data.ApiVersion, data.ServerTime, data.Result.Realtime.Skycon)
 
 	return iface.Data{}
 }
