@@ -31,24 +31,24 @@ type cyLifeIndices struct {
 }
 
 type cyAqi struct {
-	Chn int32	`json:"chn"`
-	Usa int32	`json:"usa"`
+	Chn float32	`json:"chn"`
+	Usa float32	`json:"usa"`
 }
 
-type cyAirDescription struct {
+type cyAqiDescription struct {
 	Chn string	`json:"chn"`
 	Usa string	`json:"usa"`
 }
 
 type cyRealtimeAirQuality struct {
-	Pm25 int32            `json:"pm25"`
-	Pm10 int32            `json:"pm10"`
-	O3   int32            `json:"o3"`
-	SO2  int32            `json:"so2"`
-	NO2  int32            `json:"no2"`
+	Pm25 float32          `json:"pm25"`
+	Pm10 float32          `json:"pm10"`
+	O3   float32          `json:"o3"`
+	SO2  float32          `json:"so2"`
+	NO2  float32          `json:"no2"`
 	CO   float32          `json:"co"`
 	Aqi  cyAqi            `json:"aqi"`
-	Desc cyAirDescription `json:"description"`
+	Desc cyAqiDescription `json:"description"`
 }
 
 type cyRealtimeWind struct {
@@ -67,7 +67,7 @@ type cyRealtime struct {
 	Wind 				cyRealtimeWind			`json:"wind"`
 	Pressure 			float32					`json:"pressure"`
 	ApparentTemperature float32					`json:"apparent_temperature"`
-	Aqi 				cyRealtimeAirQuality	`json:"aqi_quality"`
+	Aqi 				cyRealtimeAirQuality	`json:"air_quality"`
 	LifeIndex 			cyLifeIndices			`json:"life_index"`
 }
 
@@ -125,7 +125,7 @@ func (c *cyConfig) Fetch(location string, numdays int) iface.Data {
 		return iface.Data{}
 	}
 
-	fmt.Printf("%s %d %s\n", data.ApiVersion, data.ServerTime, data.Result.Realtime.Skycon)
+	fmt.Printf("%+v\n", data)
 
 	return iface.Data{}
 }
