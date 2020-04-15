@@ -8,6 +8,7 @@ import (
     "io/ioutil"
     "log"
     "net/http"
+    "time"
 )
 
 const (
@@ -71,8 +72,86 @@ type cyRealtime struct {
     LifeIndex 			cyLifeIndices			`json:"life_index"`
 }
 
+type cyTimeValue struct {
+    DateTime    time.Time   `json:"datetime"`
+}
+
+func (v *cyTimeValue) UnmarshalJSON(data []byte) (err error) {
+    vv := &struct { DateTime   string `json:"datetime"` }{""}
+    err = json.Unmarshal(data, vv)
+    if err != nil {
+        return err
+    }
+
+    v.DateTime, err = time.Parse("2006-01-02T15:04-07:00", vv.DateTime)
+    return err
+}
+
+type cyTimeIntValue struct {
+    cyTimeValue
+    Value       int32       `json:"value"`
+}
+
+func (v *cyTimeIntValue) UnmarshalJSON(data []byte) (err error) {
+    err = v.cyTimeValue.UnmarshalJSON(data)
+    if err != nil {
+        return err
+    }
+
+    vv := &struct { Value int32 `json:"value"` }{0}
+    err = json.Unmarshal(data, vv)
+    v.Value = vv.Value
+    return err
+}
+
+type cyTimeFloatValue struct {
+    cyTimeValue
+    Value       float32     `json:"value"`
+}
+
+func (v *cyTimeFloatValue) UnmarshalJSON(data []byte) (err error) {
+    err = v.cyTimeValue.UnmarshalJSON(data)
+    if err != nil {
+        return err
+    }
+
+    vv := &struct { Value float32 `json:"value"` }{0.0}
+    err = json.Unmarshal(data, vv)
+    v.Value = vv.Value
+    return err
+}
+
+type cyTimeStringValue struct {
+    cyTimeValue
+    Value       string      `json:"value"`
+}
+
+func (v *cyTimeStringValue) UnmarshalJSON(data []byte) (err error) {
+    err = v.cyTimeValue.UnmarshalJSON(data)
+    if err != nil {
+        return err
+    }
+
+    vv := &struct { Value string `json:"value"` }{""}
+    err = json.Unmarshal(data, vv)
+    v.Value = vv.Value
+    return err
+}
+
+type cyHourly struct {
+    Status      string              `json:"status"`
+    Desc        string              `json:"description"`
+    Temperature []cyTimeFloatValue  `json:"temperature"`
+    Humidity    []cyTimeFloatValue  `json:"humidity"`
+    Pressure    []cyTimeFloatValue  `json:"pressure"`
+    Visibility  []cyTimeFloatValue  `json:"visibility"`
+    Dswrf       []cyTimeFloatValue  `json:"dswrf"`
+    Skycon      []cyTimeStringValue `json:"skycon"`
+}
+
 type cyWeatherResult struct {
-    Realtime cyRealtime	`json:"realtime"`
+    Realtime    cyRealtime	`json:"realtime"`
+    Hourly      cyHourly    `json:"hourly"`
 }
 
 type cyWeatherData struct {
