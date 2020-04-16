@@ -15,6 +15,33 @@ const (
     caiyunUri="https://api.caiyunapp.com/v2.5/%s/%f,%f/weather.json?alert=true"
 )
 
+var codemap = map[string]iface.WeatherCode{
+    "WIND":                 iface.CodeSunny,
+    "CLEAR_DAY":            iface.CodeSunny,
+    "CLEAR_NIGHT":          iface.CodeSunny,
+    "LIGHT_HAZE":           iface.CodeFog,
+    "MODERATE_HAZE":        iface.CodeFog,
+    "HEAVY_HAZE":           iface.CodeFog,
+    "DUST":                 iface.CodeFog,
+    "SAND":                 iface.CodeFog,
+    "FOG":                  iface.CodeFog,
+    "LIGHT_SNOW":           iface.CodeLightSnow,
+    "MODERATE_SNOW":        iface.CodeHeavySnowShowers,
+    "HEAVY_SNOW":           iface.CodeHeavySnow,
+    "STORM_SNOW":           iface.CodeHeavySnow,
+    "LIGHT_RAIN":           iface.CodeLightRain,
+    "MODERATE_RAIN":        iface.CodeLightRain,
+    "HEAVY_RAIN":           iface.CodeHeavyRain,
+    "STORM_RAIN":           iface.CodeHeavyRain,
+    "SLEET":                iface.CodeLightSleet,
+    "PARTLY_CLOUDY_DAY":    iface.CodePartlyCloudy,
+    "PARTLY_CLOUDY_NIGHT":  iface.CodePartlyCloudy,
+    "THUNDER_SHOWER":       iface.CodeThunderyShowers,
+    "CLOUDY":               iface.CodeCloudy,
+    "HAIL":                 iface.CodeHeavyRain,
+
+}
+
 type cyConfig struct {
     token string
     latitude  float64
@@ -162,8 +189,9 @@ type cyWeatherData struct {
     Unit 		string				`json:"unit"`
     Tzshift 	int32				`json:"tzshift"`
     Timezone 	string				`json:"timezone"`
-    ServerTime 	int32				`json:"server_time"`
+    ServerTime 	int64				`json:"server_time"`
     Location 	[2]float32			`json:"location"`
+    Desc        string              `json:"forecast_keypoint"`
     Result 		cyWeatherResult		`json:"result"`
 }
 
@@ -204,9 +232,32 @@ func (c *cyConfig) Fetch(location string, numdays int) iface.Data {
         return iface.Data{}
     }
 
-    fmt.Printf("%+v\n", data)
+    result := iface.Data{}
+    result.GeoLoc = &iface.LatLon{Latitude: data.Location[0], Longitude: data.Location[1]}
+    result.Location = "Hangzhou"
 
-    return iface.Data{}
+    realtime := data.Result.Realtime
+
+    curr := &result.Current
+
+    curr.Time = time.Unix(data.ServerTime, 0)
+    curr.Code = codemap[realtime.Skycon]
+    curr.Desc = data.Desc
+    curr.FeelsLikeC = &realtime.ApparentTemperature
+    humidity := int(realtime.Humidity)
+    curr.Humidity = &humidity
+    curr.TempC = &realtime.Temperature
+    visibility := realtime.Visibility * 1000
+    curr.VisibleDistM = & visibility
+
+    winDegree := int(realtime.Wind.Direction)
+    curr.WinddirDegree = &winDegree
+
+    curr.WindspeedKmph = &realtime.Wind.Speed
+    curr.WindGustKmph = &realtime.Wind.Speed
+
+
+    return result
 }
 
 func init() {
